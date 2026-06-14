@@ -19,6 +19,9 @@ yarn-error.log*
 # turbo
 .turbo
 
+# test coverage
+coverage/
+
 # macOS-specific files
 .DS_Store
 
