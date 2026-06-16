@@ -2,18 +2,17 @@
 
 ## Project: Elevate
 
-Astro 6 + React 19 + TypeScript 6 monorepo with Tailwind CSS 4 and shadcn/ui.
+Next.js 15 + React 19 + TypeScript 6 monorepo with Tailwind CSS 4 and shadcn/ui.
 
 ## Architecture
 
 ```
 elevate/
-├── apps/web/          # Astro application (pages, routing, data fetching)
+├── apps/web/          # Next.js application (pages, routing, data fetching)
 │   └── src/
+│       ├── app/         # App Router pages and layouts (.tsx)
 │       ├── components/  # Page-specific components
-│       ├── layouts/     # Astro layouts
-│       ├── lib/         # App-specific utilities
-│       └── pages/       # Route pages (.astro + .tsx)
+│       └── lib/         # App-specific utilities
 ├── packages/ui/        # Shared UI component library
 │   └── src/
 │       ├── components/  # shadcn/ui-style components
@@ -30,7 +29,7 @@ elevate/
 
 | Layer           | Technology                       |
 | --------------- | -------------------------------- |
-| Framework       | Astro 6 + React 19               |
+| Framework       | Next.js 15 + React 19            |
 | Language        | TypeScript 6 (strict mode)       |
 | Styling         | Tailwind CSS 4 + tw-animate-css  |
 | UI Library      | shadcn/ui (via @workspace/ui)    |

@@ -1,17 +1,16 @@
 # Elevate
 
-Astro 6 + React 19 + TypeScript 6 monorepo with Tailwind CSS 4 and shadcn/ui.
+Next.js 15 + React 19 + TypeScript 6 monorepo with Tailwind CSS 4 and shadcn/ui.
 
 ## Architecture
 
 ```
 elevate/
-├── apps/web/              # Astro application (pages, routing, data fetching)
+├── apps/web/              # Next.js application (pages, routing, data fetching)
 │   └── src/
+│       ├── app/           # App Router pages and layouts (.tsx)
 │       ├── components/    # Page-specific compositions
-│       ├── layouts/       # Astro layouts
-│       ├── lib/           # App-specific utilities
-│       └── pages/         # Route pages (.astro + .tsx)
+│       └── lib/           # App-specific utilities
 ├── packages/ui/           # Shared UI component library
 │   └── src/
 │       ├── components/    # shadcn/ui-style components
@@ -66,7 +65,7 @@ pnpm prepare
 pnpm dev
 ```
 
-The dev server starts at `http://localhost:4321` by default.
+The dev server starts at `http://localhost:3000` by default.
 
 ### First build
 
@@ -81,7 +80,7 @@ pnpm test         # Run all tests to verify setup
 ### Troubleshooting
 
 - **`pnpm: command not found`** — Run `corepack enable && corepack prepare pnpm@10.33.4 --activate`
-- **Port 4321 in use** — Pass `--port` to Astro: `cd apps/web && npx astro dev --port 4322`
+- **Port 3000 in use** — Pass `-p` to Next.js: `cd apps/web && npx next dev -p 3001`
 - **`husky` hooks not running** — Run `pnpm prepare` from the repository root
 - **Build fails on first run** — Make sure you ran `pnpm install` from root (not inside a subdirectory)
 
@@ -89,7 +88,7 @@ pnpm test         # Run all tests to verify setup
 
 | Layer           | Technology                       |
 | --------------- | -------------------------------- |
-| Framework       | Astro 6 + React 19               |
+| Framework       | Next.js 15 + React 19            |
 | Language        | TypeScript 6 (strict mode)       |
 | Styling         | Tailwind CSS 4 + tw-animate-css  |
 | UI Library      | shadcn/ui (via @workspace/ui)    |
