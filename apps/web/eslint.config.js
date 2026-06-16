@@ -1,12 +1,14 @@
 import js from "@eslint/js"
 import globals from "globals"
+import nextPlugin from "@next/eslint-plugin-next"
 import reactHooks from "eslint-plugin-react-hooks"
 import reactRefresh from "eslint-plugin-react-refresh"
 import tseslint from "typescript-eslint"
 import { defineConfig, globalIgnores } from "eslint/config"
 
 export default defineConfig([
-  globalIgnores(["dist", ".astro", "vitest.config.ts"]),
+  globalIgnores(["dist", ".next", "vitest.config.ts", "next-env.d.ts"]),
+  nextPlugin.configs["core-web-vitals"],
   {
     files: ["**/*.{ts,tsx}"],
     extends: [
