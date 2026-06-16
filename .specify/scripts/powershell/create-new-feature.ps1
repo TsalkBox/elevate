@@ -10,6 +10,7 @@ param(
     [long]$Number = 0,
     [switch]$Timestamp,
     [switch]$Help,
+    [string]$Type = "feat",
     [Parameter(Position = 0, ValueFromRemainingArguments = $true)]
     [string[]]$FeatureDescription
 )
@@ -17,7 +18,7 @@ $ErrorActionPreference = 'Stop'
 
 # Show help if requested
 if ($Help) {
-    Write-Host "Usage: ./create-new-feature.ps1 [-Json] [-DryRun] [-AllowExistingBranch] [-ShortName <name>] [-Number N] [-Timestamp] <feature description>"
+    Write-Host "Usage: ./create-new-feature.ps1 [-Json] [-DryRun] [-AllowExistingBranch] [-ShortName <name>] [-Number N] [-Timestamp] [-Type <type>] <feature description>"
     Write-Host ""
     Write-Host "Options:"
     Write-Host "  -Json               Output in JSON format"
@@ -26,11 +27,12 @@ if ($Help) {
     Write-Host "  -ShortName <name>   Provide a custom short name (2-4 words) for the feature"
     Write-Host "  -Number N           Specify branch number manually (overrides auto-detection)"
     Write-Host "  -Timestamp          Use timestamp prefix (YYYYMMDD-HHMMSS) instead of sequential numbering"
+    Write-Host "  -Type <type>        Conventional commit type prefix (feat, fix, chore, refactor, docs, test). Default: feat"
     Write-Host "  -Help               Show this help message"
     Write-Host ""
     Write-Host "Examples:"
     Write-Host "  ./create-new-feature.ps1 'Add user authentication system' -ShortName 'user-auth'"
-    Write-Host "  ./create-new-feature.ps1 'Implement OAuth2 integration for API'"
+    Write-Host "  ./create-new-feature.ps1 'Fix payment bug' -Type fix -ShortName 'payment-bug'"
     Write-Host "  ./create-new-feature.ps1 -Timestamp -ShortName 'user-auth' 'Add user authentication'"
     exit 0
 }
@@ -148,7 +150,6 @@ if ($Timestamp -and $Number -ne 0) {
 # Determine branch prefix
 if ($Timestamp) {
     $featureNum = Get-Date -Format 'yyyyMMdd-HHmmss'
-    $branchName = "$featureNum-$branchSuffix"
 } else {
     # Determine branch number from existing feature directories
     if ($Number -eq 0) {
@@ -156,32 +157,36 @@ if ($Timestamp) {
     }
 
     $featureNum = ('{0:000}' -f $Number)
-    $branchName = "$featureNum-$branchSuffix"
 }
+
+# Construct directory name (flat, no type prefix)
+$featureDirName = "$featureNum-$branchSuffix"
+
+# Construct git branch name with type prefix
+$branchName = "$Type/$featureDirName"
 
 # GitHub enforces a 244-byte limit on branch names
 # Validate and truncate if necessary
 $maxBranchLength = 244
 if ($branchName.Length -gt $maxBranchLength) {
     # Calculate how much we need to trim from suffix
-    # Account for prefix length: timestamp (15) + hyphen (1) = 16, or sequential (3) + hyphen (1) = 4
-    $prefixLength = $featureNum.Length + 1
+    $prefixLength = $Type.Length + 1 + $featureNum.Length + 1
     $maxSuffixLength = $maxBranchLength - $prefixLength
 
     # Truncate suffix
     $truncatedSuffix = $branchSuffix.Substring(0, [Math]::Min($branchSuffix.Length, $maxSuffixLength))
-    # Remove trailing hyphen if truncation created one
     $truncatedSuffix = $truncatedSuffix -replace '-$', ''
 
+    $featureDirName = "$featureNum-$truncatedSuffix"
     $originalBranchName = $branchName
-    $branchName = "$featureNum-$truncatedSuffix"
+    $branchName = "$Type/$featureDirName"
 
     Write-Warning "[specify] Branch name exceeded GitHub's 244-byte limit"
     Write-Warning "[specify] Original: $originalBranchName ($($originalBranchName.Length) bytes)"
     Write-Warning "[specify] Truncated to: $branchName ($($branchName.Length) bytes)"
 }
 
-$featureDir = Join-Path $specsDir $branchName
+$featureDir = Join-Path $specsDir $featureDirName
 $specFile = Join-Path $featureDir 'spec.md'
 
 if (-not $DryRun) {
