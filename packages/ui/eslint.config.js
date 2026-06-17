@@ -6,16 +6,31 @@ import tseslint from "typescript-eslint"
 import { defineConfig, globalIgnores } from "eslint/config"
 
 export default defineConfig([
-  globalIgnores(["dist"]),
+  globalIgnores(["dist", "vitest.config.ts", "src/test"]),
   {
     files: ["**/*.{ts,tsx}"],
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
       reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
     ],
+    settings: {
+      react: { version: "19" },
+    },
+    plugins: {
+      "react-refresh": reactRefresh,
+    },
+    rules: {
+      ...reactRefresh.configs.vite.rules,
+      "react-refresh/only-export-components": [
+        "warn",
+        { allowConstantExport: true },
+      ],
+    },
     languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+      },
       globals: globals.browser,
     },
   },
