@@ -126,4 +126,17 @@ Branch convention: `{type}/{###}-{kebab-case-description}` (e.g., `feat/001-add-
 - Every dependency must justify its weight (YAGNI)
 - Commit messages must follow Conventional Commits spec
 
+## AI Config Files
+
+- **Do NOT commit AI agent config files** (`.opencode/`, `.claude/`, `.agents/`, `opencode.json`).
+- These are gitignored and personal to each developer.
+- AI tooling recommendations live in [`docs/ai-tooling.md`](docs/ai-tooling.md).
+
+## Commit Policy
+
+- **Do NOT commit or push changes directly.** Stage changes with `git add` only.
+- After completing implementation, present a summary of every file changed and why.
+- Wait for the developer to review, validate, and commit manually.
+- This ensures every change is reviewed before it enters the codebase.
+
 <!-- SPECKIT END -->

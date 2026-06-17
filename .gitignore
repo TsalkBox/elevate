@@ -35,7 +35,12 @@ coverage/
 specs/
 
 # spec-kit agent folder (may contain credentials/auth tokens)
+.agents/
 .opencode/
+.claude/
 
 # graphify generated artifacts (regenerable)
 graphify-out/
+
+# AI coding agent config files (personal — developer-managed, not committed)
+opencode.json
